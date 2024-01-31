@@ -8,7 +8,7 @@ const ProjectsTable = () => {
   const inTime = useRecoilValue(inTimeState);
   const outTime = useRecoilValue(outTimeState);
 
-  const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbyqO9Llq-3Zfr-7tBNyyPhSQNNEugmYogGs4HentafOo7_Lsvz8xyPQnby7EcXhNrZTzA/exec?action=getProjects';
+  const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbwsTJ5DGAOUngbYLownROGcjstFqLHaET1QHPOsB8jhNwJB_-t8DHy5j6zeRTBOWrA6dQ/exec?action=getProjects';
 
 
   // const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
