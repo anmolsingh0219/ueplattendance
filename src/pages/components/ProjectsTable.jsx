@@ -2,35 +2,62 @@ import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { projectsState, projectsLoadingState, inTimeState, outTimeState } from './AppState';
 
+const SHEET_ID = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual sheet ID
+const RANGE = 'Project!A2:B'; //
+
 const ProjectsTable = () => {
   const [projects, setProjects] = useRecoilState(projectsState);
   const [loading, setLoading] = useRecoilState(projectsLoadingState);
   const inTime = useRecoilValue(inTimeState);
   const outTime = useRecoilValue(outTimeState);
 
-  const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbwsTJ5DGAOUngbYLownROGcjstFqLHaET1QHPOsB8jhNwJB_-t8DHy5j6zeRTBOWrA6dQ/exec?action=getProjects';
+  // const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbwsTJ5DGAOUngbYLownROGcjstFqLHaET1QHPOsB8jhNwJB_-t8DHy5j6zeRTBOWrA6dQ/exec?action=getProjects';
 
 
-  // const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
-  // const PROJECTS_URL = `${PROXY_URL}https://script.google.com/macros/s/AKfycbxsmJ4XyQBNiBfhXasqj8GPJ5baETLMo8ycbMtJfcV_MljSYg5lfkUqHkgUwbqfHLqofw/exec?action=getProjects`;
-
-
-  // Endpoint URL for the Google Apps Script Web App
-  // const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbxsmJ4XyQBNiBfhXasqj8GPJ5baETLMo8ycbMtJfcV_MljSYg5lfkUqHkgUwbqfHLqofw/exec?action=getProjects';
-
-  useEffect(() => {
-    setLoading(true);
-    fetch(PROJECTS_URL)
-      .then((response) => response.json())
-      .then((data) => {
-        setProjects(data.map((item, index) => ({ ...item, hours: 0, id: index + 1 })));
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching projects:', error);
-        setLoading(false);
+  const loadSheetData = async (accessToken, sheetId, range) => {
+    try {
+      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
-  }, [PROJECTS_URL,setProjects, setLoading]);
+  
+      if (!response.ok) {
+        throw new Error('Could not fetch sheet data');
+      }
+      
+      const data = await response.json();
+      return data.values; // assuming the data is in the .values property
+    } catch (error) {
+      console.error('Error fetching sheet data:', error);
+      throw error; // rethrow the error to be handled by the caller
+    }
+  };
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const accessToken = localStorage.getItem('accessToken');
+
+       try {
+        const sheetData = await loadSheetData(accessToken, SHEET_ID, RANGE);
+        const projectsData = sheetData.map((row, index) => ({
+          id: index + 1, // Sr. No. is just the index + 1
+          code: row[0], // Project code is assumed to be in the first column
+          name: row[1], // Project name is assumed to be in the second column
+          hours: 0, // Initialize hours as 0 for the input
+        }));
+
+        setProjects(projectsData);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [setProjects, setLoading]);
 
   const calculateTotalAvailableHours = () => {
     const [inHours, inMinutes] = inTime.split(':').map(Number);

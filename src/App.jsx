@@ -1,20 +1,18 @@
 // src/App.jsx
 import { RecoilRoot } from 'recoil';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import OAuthCallback from './components/OAuthCallback'; // Make sure to create this component
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomePage from './pages/HomePage'; // Ensure this import is correct
+import GoogleAuth from './pages/components/GoogleAuth'; // Ensure this import is correct
 
 const App = () => {
   return (
     <RecoilRoot>
       <Router>
-        <div className="App">
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/auth/google/callback" component={OAuthCallback} />
-            {/* Add other routes as needed */}
-          </Switch>
-        </div>
+        <Routes>
+          <Route path="/homepage" element={<HomePage />} />
+          <Route path="/" element={<GoogleAuth />} /> {/* Use `element` instead of `component` */}
+          {/* Add other routes as needed */}
+        </Routes>
       </Router>
     </RecoilRoot>
   );

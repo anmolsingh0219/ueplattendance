@@ -6,7 +6,7 @@ import SelectedDateDisplay from './components/DateDisplay';
 import { RecoilRoot } from 'recoil';
 
 
-export const HomePage = () => {
+const HomePage = () => {
   return (
      <RecoilRoot>
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-800 text-white p-6">
@@ -27,3 +27,5 @@ export const HomePage = () => {
     </RecoilRoot>
   );
 };
+
+export default HomePage;
