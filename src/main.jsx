@@ -6,7 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 // Accessing environment variables in Vite
-const googleClientId = import.meta.env.VITE_REACT_APP_GOOGLE_CLIENT_ID;
+const googleClientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
 
 
 root.render(
