@@ -10,8 +10,6 @@ const ProjectsTable = () => {
   const inTime = useRecoilValue(inTimeState);
   const outTime = useRecoilValue(outTimeState);
 
-  // const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbwsTJ5DGAOUngbYLownROGcjstFqLHaET1QHPOsB8jhNwJB_-t8DHy5j6zeRTBOWrA6dQ/exec?action=getProjects';
-
   const loadSheetData = async () => {
     const accessToken = localStorage.getItem('access_token'); // Get the access token from local storage
     const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual sheet ID

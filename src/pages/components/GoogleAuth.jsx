@@ -10,14 +10,15 @@ const GoogleAuth = () => {
   const handleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       console.log(tokenResponse); // Here you can send the tokenResponse.code to your backend if necessary
-      localStorage.setItem('access_token', tokenResponse.access_token);
-      navigate('/homepage'); // Use navigate instead of window.location to stay within the SPA context
+      // Navigate to OAuthCallback component that will handle the code exchange
+      navigate(`/oauthcallback?code=${tokenResponse.code}`);
     },
     onError: (error) => {
       console.error('Login Failed:', error);
       setError(error);
     },
     scope: 'https://www.googleapis.com/auth/spreadsheets',
+    flow: 'auth-code', // This specifies that you want to get an authorization code
   });
 
   return (

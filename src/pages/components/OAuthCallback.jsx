@@ -1,33 +1,44 @@
-// // In OAuthCallback.jsx
-// import { useEffect } from 'react';
-// import { useLocation, useHistory } from 'react-router-dom';
-// import axios from 'axios'; // Ensure axios is installed
+// OAuthCallback.jsx
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-// const OAuthCallback = () => {
-//   const location = useLocation();
-//   const history = useHistory();
+const OAuthCallback = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-//   useEffect(() => {
-//     const exchangeCodeForToken = async () => {
-//       const queryParams = new URLSearchParams(location.search);
-//       const code = queryParams.get('code');
+  useEffect(() => {
+    const code = searchParams.get('code');
+    if (!code) {
+      navigate('/');
+      return;
+    }
 
-//       if (code) {
-//         try {
-//           const response = await axios.post('YOUR_BACKEND_ENDPOINT', { code });
-//           localStorage.setItem('accessToken', response.data.accessToken);
-//           history.push('/dashboard');
-//         } catch (error) {
-//           console.error('Error exchanging token', error);
-//           history.push('/login');
-//         }
-//       }
-//     };
+    // Exchange the code for tokens (should be done in the backend)
+    const exchangeCodeForTokens = async () => {
+      // Replace with your server endpoint that handles the exchange
+      const response = await fetch('YOUR_SERVER_ENDPOINT', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code }),
+      });
+      const data = await response.json();
+      if (data.access_token) {
+        // Store the access token and navigate to the homepage
+        localStorage.setItem('access_token', data.access_token);
+        navigate('/homepage');
+      } else {
+        // Handle errors, such as displaying a message to the user
+        navigate('/');
+      }
+    };
 
-//     exchangeCodeForToken();
-//   }, [location, history]);
+    exchangeCodeForTokens();
+  }, [searchParams, navigate]);
 
-//   return <div>Logging you in...</div>;
-// };
+  // Render a loading indicator or similar while the exchange is happening
+  return <div>Exchanging authorization code for tokens...</div>;
+};
 
-// export default OAuthCallback;
+export default OAuthCallback;
