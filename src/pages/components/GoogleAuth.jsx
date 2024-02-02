@@ -11,7 +11,7 @@ const GoogleAuth = () => {
     onSuccess: async (tokenResponse) => {
       console.log(tokenResponse); // Here you can send the tokenResponse.code to your backend if necessary
       // Navigate to OAuthCallback component that will handle the code exchange
-      navigate(`/oauthcallback?code=${tokenResponse.code}`);
+      navigate(`/oauth2callback?code=${tokenResponse.code}`);
     },
     onError: (error) => {
       console.error('Login Failed:', error);
