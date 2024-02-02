@@ -1,6 +1,6 @@
 // src/App.jsx
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GoogleAuth from './components/GoogleAuth';
+import GoogleAuth from './pages/components/GoogleAuth';
 import HomePage from './pages/HomePage';
 
 const App = () => {
