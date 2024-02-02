@@ -9,8 +9,8 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<GoogleAuth />} />
-        <Route path="/oauthcallback" element={<OAuthCallback />} />
         <Route path="/homepage" element={<HomePage />} />
+        <Route path="/oauth2callback" element={<OAuthCallback />} /> {/* This line is new */}
       </Routes>
     </Router>
   );
