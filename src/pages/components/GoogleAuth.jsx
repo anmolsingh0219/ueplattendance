@@ -11,9 +11,7 @@ const GoogleAuth = () => {
     onSuccess: async (tokenResponse) => {
       console.log(tokenResponse); // Here you can send the tokenResponse.code to your backend if necessary
       localStorage.setItem('access_token', tokenResponse.access_token);
-      // Navigate to the dashboard or home page after successful login
-      // window.location.href = '/homepage';
-      navigate('/homepage');
+      navigate('/homepage'); // Use navigate instead of window.location to stay within the SPA context
     },
     onError: (error) => {
       console.error('Login Failed:', error);

@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { projectsState, projectsLoadingState, inTimeState, outTimeState } from './AppState';
 
-const SHEET_ID = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual sheet ID
-const RANGE = 'Project!A2:B'; //
+
 
 const ProjectsTable = () => {
   const [projects, setProjects] = useRecoilState(projectsState);
@@ -13,34 +12,39 @@ const ProjectsTable = () => {
 
   // const PROJECTS_URL = 'https://script.google.com/macros/s/AKfycbwsTJ5DGAOUngbYLownROGcjstFqLHaET1QHPOsB8jhNwJB_-t8DHy5j6zeRTBOWrA6dQ/exec?action=getProjects';
 
-
-  const loadSheetData = async (accessToken, sheetId, range) => {
+  const loadSheetData = async () => {
+    const accessToken = localStorage.getItem('access_token'); // Get the access token from local storage
+    const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual sheet ID
+    const range = 'Project!A2:B'; 
+  
     try {
-      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await fetch(
+        `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        }
+      );
   
       if (!response.ok) {
-        throw new Error('Could not fetch sheet data');
+        throw new Error('Failed to fetch data from the sheet');
       }
-      
+  
       const data = await response.json();
-      return data.values; // assuming the data is in the .values property
+      return data.values; // This will be an array of arrays with your data
     } catch (error) {
-      console.error('Error fetching sheet data:', error);
-      throw error; // rethrow the error to be handled by the caller
+      console.error('Error fetching data from the sheet:', error);
+      return []; // Return an empty array in case of error
     }
   };
   
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const accessToken = localStorage.getItem('accessToken');
 
        try {
-        const sheetData = await loadSheetData(accessToken, SHEET_ID, RANGE);
+        const sheetData = await loadSheetData();
         const projectsData = sheetData.map((row, index) => ({
           id: index + 1, // Sr. No. is just the index + 1
           code: row[0], // Project code is assumed to be in the first column
