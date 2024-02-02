@@ -9,8 +9,8 @@ const OAuthCallback = () => {
     const exchangeCodeForTokens = async (code) => {
       const tokenEndpoint = 'https://oauth2.googleapis.com/token';
       const payload = {
-        client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID,
-        client_secret: import.meta.env.VITE_APP_GOOGLE_CLIENT_SECRET,
+        client_id:  "115381404024-j4bi9p94iarcutrv7o896fpieevq1k2f.apps.googleusercontent.com",
+        client_secret: "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",
         code: code,
         redirect_uri: `https://ueplattendance.vercel.app/oauth2callback`, // Ensure this matches the Google Cloud Console settings
         grant_type: 'authorization_code',
