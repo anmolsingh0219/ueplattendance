@@ -36,7 +36,7 @@ const StatusSelector = () => {
     setCurrentStatus(e.target.value);
   };
 
-  const handleSave  = async () => {
+  const handleSave = async () => {
     if (selectedDate) {
       setAttendance({ ...attendance, [selectedDate]: currentStatus });
       setSelectedDate(null); // Clear the selected date after saving
@@ -45,38 +45,41 @@ const StatusSelector = () => {
       const accessToken = localStorage.getItem('access_token'); // Access token from OAuth
       const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual Google Sheet ID
       const range = 'Hours Logged'; // Replace with your actual sheet name
-  
-      // ... rest of the function
-  
-      // Format the data to write to the Google Sheet
+
+    if (selectedDate && userEmail) {
       const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
-        month: '2-digit',
         day: '2-digit',
-        year: '2-digit',
+        month: 'short',
+        year: 'numeric',
       });
-      const uniqueCode = `UNIQUE_CODE_FOR_${formattedDate}`; // Replace with your logic to create a unique code
-  
-      // Assuming 'projects' is an array of project objects with 'hours' property
+
+      // Construct the unique code based on the user's email ID and the selected date
+      const uniqueCode = `${formattedDate.replace(/\//g, '')}${userEmail.split('@')[0]}`;
+
       const projectHours = projects.map(project => project.hours);
-  
+
+      // Prepare the data in the structure required by your Google Sheet
       const data = [
-        uniqueCode,
-        formattedDate,
-        userEmail, // User's email
-        inTime,
-        outTime,
-        ...projectHours,
+        uniqueCode, // Unique Code
+        formattedDate, // Date
+        userEmail, // User Email ID
+        inTime, // In Time
+        outTime, // Out Time
+        currentStatus, // Status
+        ...projectHours, // Hours for each project
       ];
-  
+
+      // Call the function to append data to the sheet
       try {
         const response = await appendDataToSheet(data, sheetId, range, accessToken);
         console.log(response); // Log the response from the Google Sheets API
-        // Here you can handle the UI update to confirm the data was saved
+        // Handle the UI update to confirm the data was saved
       } catch (error) {
         console.error('Error writing to the sheet:', error);
-        // Here you can handle the UI update to show an error
+        // Handle the UI update to show an error
       }
     }
+  }
   };
 
   const handleInTimeChange = (e) => {
