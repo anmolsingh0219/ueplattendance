@@ -49,12 +49,12 @@ const StatusSelector = () => {
       // ... rest of the function
   
       // Format the data to write to the Google Sheet
-      const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
-        month: '2-digit',
+      const formattedDate = new Date(selectedDate).toLocaleDateString('en-GB', {
         day: '2-digit',
+        month: 'short',
         year: '2-digit',
       });
-      const uniqueCode = `UNIQUE_CODE_FOR_${formattedDate}`; // Replace with your logic to create a unique code
+      const uniqueCode = `${formattedDate}`; // Replace with your logic to create a unique code
   
       // Assuming 'projects' is an array of project objects with 'hours' property
       const projectHours = projects.map(project => project.hours);
