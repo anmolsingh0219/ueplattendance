@@ -43,8 +43,8 @@ const StatusSelector = () => {
       // ... existing logic to handle the status change
   
       const accessToken = localStorage.getItem('access_token'); // Access token from OAuth
-      const sheetId = 'YOUR_SHEET_ID'; // Replace with your actual Google Sheet ID
-      const range = 'Your_Sheet_Name'; // Replace with your actual sheet name
+      const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual Google Sheet ID
+      const range = 'Hours Logged'; // Replace with your actual sheet name
   
       // ... rest of the function
   
