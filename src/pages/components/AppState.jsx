@@ -43,3 +43,8 @@ export const projectsLoadingState = atom({
   key: 'projectsLoadingState',
   default: true,
 });
+
+export const userEmailState = atom({
+  key: 'userEmailState',
+  default: '',
+});

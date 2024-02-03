@@ -94,23 +94,23 @@ const ProjectsTable = () => {
   }
 
   return (
-    <div className="bg-white rounded overflow-auto max-h-64">
+    <div className="bg-white rounded overflow-auto max-h-200 max-w-100">
       <table className="min-w-full">
         <thead>
           <tr>
-            <th className="p-3 border-b text-black">Sr. No.</th>
-            <th className="p-3 border-b text-black">Project Code</th>
-            <th className="p-3 border-b text-black">Project</th>
-            <th className="p-3 border-b text-black">Hours clocked in</th>
+            <th className="p-4 border-b text-black">Sr. No.</th>
+            <th className="p-4 border-b text-black">Project Code</th>
+            <th className="p-4 border-b text-black">Project</th>
+            <th className="p-4 border-b text-black">Hours clocked in</th>
           </tr>
         </thead>
         <tbody>
           {projects.map((project, index) => (
             <tr key={index}>
-              <td className="p-3 border-b text-center text-black">{index + 1}</td>
-              <td className="p-3 border-b text-center text-black">{project.code}</td>
-              <td className="p-3 border-b text-black">{project.name}</td>
-              <td className="p-3 border-b text-black">
+              <td className="p-4 border-b text-center text-black">{index + 1}</td>
+              <td className="p-4 border-b text-center text-black">{project.code}</td>
+              <td className="p-4 border-b text-black">{project.name}</td>
+              <td className="p-4 border-b text-black">
                 <input
                   type="number"
                   className="form-input bg-white text-black"

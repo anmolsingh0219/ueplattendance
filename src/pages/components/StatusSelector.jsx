@@ -1,5 +1,26 @@
-import { useRecoilState } from 'recoil';
-import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState  } from './AppState';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState, userEmailState, } from './AppState';
+
+
+const appendDataToSheet = async (data, sheetId, range, accessToken) => {
+  const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
+  const response = await fetch(sheetsUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      values: [data],
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to append data to the sheet');
+  }
+
+  return await response.json();
+};
 
 const StatusSelector = () => {
   const [currentStatus, setCurrentStatus] = useRecoilState(currentStatusState);
@@ -7,16 +28,54 @@ const StatusSelector = () => {
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [inTime, setInTime] = useRecoilState(inTimeState);
   const [outTime, setOutTime] = useRecoilState(outTimeState);
+  const userEmail = useRecoilValue(userEmailState);
+  const projects = useRecoilValue(projectsState);
 
 
   const handleStatusChange = (e) => {
     setCurrentStatus(e.target.value);
   };
 
-  const handleSave = () => {
+  const handleSave  = async () => {
     if (selectedDate) {
       setAttendance({ ...attendance, [selectedDate]: currentStatus });
       setSelectedDate(null); // Clear the selected date after saving
+      // ... existing logic to handle the status change
+  
+      const accessToken = localStorage.getItem('access_token'); // Access token from OAuth
+      const sheetId = 'YOUR_SHEET_ID'; // Replace with your actual Google Sheet ID
+      const range = 'Your_Sheet_Name'; // Replace with your actual sheet name
+  
+      // ... rest of the function
+  
+      // Format the data to write to the Google Sheet
+      const formattedDate = new Date(selectedDate).toLocaleDateString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: '2-digit',
+      });
+      const uniqueCode = `UNIQUE_CODE_FOR_${formattedDate}`; // Replace with your logic to create a unique code
+  
+      // Assuming 'projects' is an array of project objects with 'hours' property
+      const projectHours = projects.map(project => project.hours);
+  
+      const data = [
+        uniqueCode,
+        formattedDate,
+        userEmail, // User's email
+        inTime,
+        outTime,
+        ...projectHours,
+      ];
+  
+      try {
+        const response = await appendDataToSheet(data, sheetId, range, accessToken);
+        console.log(response); // Log the response from the Google Sheets API
+        // Here you can handle the UI update to confirm the data was saved
+      } catch (error) {
+        console.error('Error writing to the sheet:', error);
+        // Here you can handle the UI update to show an error
+      }
     }
   };
 
@@ -86,7 +145,7 @@ const StatusSelector = () => {
       <button className="bg-blue-600 text-white py-2 px-4 text-lg rounded hover:bg-blue-700" onClick={handleSave}>
       Save
     </button>
-    <button className="bg-red-600 text-white py-2 px-4 text-lg rounded hover:bg-red-700" onClick={handleReset}>
+    <button className="bg-red-600 text-white py-2 ml-2 text-lg rounded hover:bg-red-700" onClick={handleReset}>
       Reset
     </button>
       </div>
