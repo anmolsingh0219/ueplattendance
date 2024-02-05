@@ -53,7 +53,8 @@ const StatusSelector = () => {
         day: '2-digit',
         month: 'short',
         year: '2-digit',
-      });
+      }).replace(/ /g, '');
+      
       const uniqueCode = `${formattedDate}`; // Replace with your logic to create a unique code
   
       // Assuming 'projects' is an array of project objects with 'hours' property

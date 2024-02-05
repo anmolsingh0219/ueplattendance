@@ -1,18 +1,21 @@
 // src/components/OAuthCallback.jsx
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { userEmailState } from './AppState'; // Import the userEmailState atom
 
 const OAuthCallback = () => {
   const navigate = useNavigate();
+  const setUserEmail = useSetRecoilState(userEmailState); // Get the setter function for the userEmailState
 
   useEffect(() => {
     const exchangeCodeForTokens = async (code) => {
       const tokenEndpoint = 'https://oauth2.googleapis.com/token';
       const payload = {
-        client_id:  "115381404024-j4bi9p94iarcutrv7o896fpieevq1k2f.apps.googleusercontent.com",
+        client_id: "115381404024-j4bi9p94iarcutrv7o896fpieevq1k2f.apps.googleusercontent.com",
         client_secret: "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",
         code: code,
-        redirect_uri: `https://ueplattendance.vercel.app`, // Ensure this matches the Google Cloud Console settings
+        redirect_uri: `https://ueplattendance.vercel.app`, // Make sure this matches the redirect URI configured in Google Cloud Console
         grant_type: 'authorization_code',
       };
 
@@ -27,13 +30,24 @@ const OAuthCallback = () => {
 
         if (response.ok) {
           localStorage.setItem('access_token', data.access_token);
-          // Redirect to the homepage or dashboard
-          navigate('/homepage');
+
+          // Fetch user information
+          const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+            headers: { Authorization: `Bearer ${data.access_token}` },
+          });
+
+          if (userInfoResponse.ok) {
+            const userInfo = await userInfoResponse.json();
+            setUserEmail(userInfo.email); // Store the user's email in Recoil state
+            navigate('/homepage'); // Redirect to the homepage or dashboard
+          } else {
+            throw new Error('Could not fetch user info.');
+          }
         } else {
           throw new Error(data.error || 'Token exchange was not successful.');
         }
       } catch (error) {
-        console.error('Error during token exchange:', error);
+        console.error('Error during token exchange or user info fetch:', error);
         navigate('/'); // Redirect to login on error
       }
     };
@@ -47,7 +61,7 @@ const OAuthCallback = () => {
     } else {
       navigate('/');
     }
-  }, [navigate]);
+  }, [navigate, setUserEmail]);
 
   return <div>Loading...</div>;
 };
