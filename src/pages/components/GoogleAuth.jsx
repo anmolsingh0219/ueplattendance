@@ -17,7 +17,7 @@ const GoogleAuth = () => {
       console.error('Login Failed:', error);
       setError(error);
     },
-    scope: 'https://www.googleapis.com/auth/spreadsheets',
+    scope: 'https://www.googleapis.com/auth/spreadsheets email profile',
     flow: 'auth-code', // This specifies that you want to get an authorization code
   });
 
