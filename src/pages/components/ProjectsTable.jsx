@@ -13,7 +13,7 @@ const ProjectsTable = () => {
   const loadSheetData = async () => {
     const accessToken = localStorage.getItem('access_token'); // Get the access token from local storage
     const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual sheet ID
-    const range = 'Project!A2:B'; 
+    const range = 'Project!A2:C'; 
   
     try {
       const response = await fetch(
@@ -40,24 +40,26 @@ const ProjectsTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
-       try {
+  
+      try {
         const sheetData = await loadSheetData();
-        const projectsData = sheetData.map((row, index) => ({
+        
+        // Filter the data to only include rows where the status is "Live"
+        const liveProjectsData = sheetData.filter(row => row[2] === 'Live').map((row, index) => ({
           id: index + 1, // Sr. No. is just the index + 1
           code: row[0], // Project code is assumed to be in the first column
           name: row[1], // Project name is assumed to be in the second column
           hours: 0, // Initialize hours as 0 for the input
         }));
-
-        setProjects(projectsData);
+  
+        setProjects(liveProjectsData);
       } catch (error) {
         console.error('Error loading projects:', error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, [setProjects, setLoading]);
 
