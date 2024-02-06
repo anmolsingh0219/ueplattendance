@@ -3,6 +3,13 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+const scope = [
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile',
+  'https://www.googleapis.com/auth/spreadsheets',
+];
+
 const GoogleAuth = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -17,7 +24,7 @@ const GoogleAuth = () => {
       console.error('Login Failed:', error);
       setError(error);
     },
-    scope: 'https://www.googleapis.com/auth/spreadsheets email profile',
+    scope: scope,
     flow: 'auth-code', // This specifies that you want to get an authorization code
   });
 
