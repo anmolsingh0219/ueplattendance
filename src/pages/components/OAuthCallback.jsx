@@ -32,7 +32,7 @@ const OAuthCallback = () => {
           localStorage.setItem('access_token', data.access_token);
 
           // Fetch user information
-          const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+          const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: { Authorization: `Bearer ${data.access_token}` },
           });
 

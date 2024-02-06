@@ -48,3 +48,18 @@ export const userEmailState = atom({
   key: 'userEmailState',
   default: '',
 });
+
+export const employeeCodeState = atom({
+  key: 'employeeCodeState',
+  default: '', 
+});
+
+export const employeeSearchTermState = atom({
+  key: 'employeeSearchTermState',
+  default: '',
+});
+
+export const dropdownVisibilityState = atom({
+  key: 'dropdownVisibilityState',
+  default: false,
+});

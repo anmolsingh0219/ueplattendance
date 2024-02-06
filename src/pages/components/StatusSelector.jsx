@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState, userEmailState, } from './AppState';
-
+import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState } from './AppState';
+import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState } from './AppState';
 
 const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
@@ -28,12 +28,41 @@ const StatusSelector = () => {
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [inTime, setInTime] = useRecoilState(inTimeState);
   const [outTime, setOutTime] = useRecoilState(outTimeState);
-  const userEmail = useRecoilValue(userEmailState);
+  // const userEmail = useRecoilValue(userEmailState);
   const projects = useRecoilValue(projectsState);
+  const [employeeCode, setEmployeeCode] = useRecoilState(employeeCodeState);
+  const [searchTerm, setSearchTerm] = useRecoilState(employeeSearchTermState);
+  const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState);
 
 
   const handleStatusChange = (e) => {
     setCurrentStatus(e.target.value);
+  };
+
+  const employeeCodes = ['U001', 'U002', 'U005', 'U007']; // Your employee codes
+  const filteredEmployeeCodes = searchTerm
+    ? employeeCodes.filter((code) =>
+        code.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : employeeCodes;
+
+    const handleEmployeeCodeSelect = (code) => {
+      setEmployeeCode(code); // Set the selected employee code
+      setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
+      setIsDropdownVisible(false); // Hide dropdown after selection
+    };
+
+  const handleSearchTermChange = (e) => {
+    setSearchTerm(e.target.value);
+    setIsDropdownVisible(true); // Show dropdown when typing
+  };
+
+  const handleInputBlur = () => {
+    // Optionally, you can hide the dropdown when the input loses focus
+    // setTimeout is used to delay the hiding, ensuring that a click on a dropdown item is registered
+    setTimeout(() => {
+      setIsDropdownVisible(false);
+    }, 100);
   };
 
   const handleSave  = async () => {
@@ -63,7 +92,7 @@ const StatusSelector = () => {
       const data = [
         uniqueCode,
         formattedDate,
-        userEmail, // User's email
+        employeeCode, // User's email
         inTime,
         outTime,
         ...projectHours,
@@ -142,6 +171,34 @@ const StatusSelector = () => {
         </select>
         <div>Total Hours: {totalHours.toFixed(2)}</div>
       </div>
+      <div className='flex-col items-start'>
+        <div>Enter your Employee Code</div>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search employee code"
+            className="border p-2"
+            value={searchTerm}
+            onChange={handleSearchTermChange}
+            onFocus={() => setIsDropdownVisible(true)}
+            onBlur={handleInputBlur}
+          />
+          {isDropdownVisible && (
+  <ul className="absolute border w-full z-10 bg-white text-black">
+    {filteredEmployeeCodes.map((code) => (
+      <li
+        key={code}
+        className="p-2 hover:bg-blue-200 cursor-pointer"
+        onClick={() => handleEmployeeCodeSelect(code)}
+        onMouseDown={(e) => e.preventDefault()} // Prevent the input from losing focus
+      >
+        {code}
+      </li>
+    ))}
+  </ul>
+)}
+        </div>
+       </div>
       <div className='p-3'>
       <button className="bg-blue-600 text-white py-2 px-4 text-lg rounded hover:bg-blue-700" onClick={handleSave}>
       Save
