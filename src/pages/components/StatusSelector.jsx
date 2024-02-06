@@ -84,7 +84,7 @@ const StatusSelector = () => {
         year: '2-digit',
       }).replace(/ /g, '');
       
-      const uniqueCode = `${formattedDate}`; // Replace with your logic to create a unique code
+      const uniqueCode = formattedDate + employeeCode; // Replace with your logic to create a unique code
   
       // Assuming 'projects' is an array of project objects with 'hours' property
       const projectHours = projects.map(project => project.hours);
