@@ -8,7 +8,7 @@ const scope = [
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/userinfo.profile',
   'https://www.googleapis.com/auth/spreadsheets',
-];
+].join(' ');
 
 const GoogleAuth = () => {
   const [error, setError] = useState(null);
