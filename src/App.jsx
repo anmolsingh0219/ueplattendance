@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GoogleAuth from './pages/components/GoogleAuth';
 import OAuthCallback from './pages/components/OAuthCallback';
-import HomePage from './HomePage';
+import HomePage from './pages/HomePage';
 import refreshAccessToken from './pages/components/RefreshToken';
 
 const App = () => {
