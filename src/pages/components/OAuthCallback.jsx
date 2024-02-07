@@ -30,6 +30,12 @@ const OAuthCallback = () => {
 
         if (response.ok) {
           localStorage.setItem('access_token', data.access_token);
+          localStorage.setItem('refresh_token', data.refresh_token); 
+          const expiresAt = new Date();
+          expiresAt.setSeconds(expiresAt.getSeconds() + data.expires_in);
+
+          // Save refresh token
+          localStorage.setItem('expires_at', expiresAt.toISOString());
 
           // Fetch user information
           const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
