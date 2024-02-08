@@ -58,7 +58,7 @@ const StatusSelector = () => {
 
   const handleEmployeeCodeSelect = async (code) => {
     setEmployeeCode(code);
-    setSearchTerm(''); // Clear search term if needed
+    setSearchTerm(code); // Clear search term if needed
     setIsDropdownVisible(false); // Hide dropdown
     
     // Use the correct accessToken retrieval method
@@ -174,7 +174,7 @@ const StatusSelector = () => {
 
   // Generate time options for the dropdown
   const timeOptions = Array.from({ length: 48 }, (_, index) => {
-    const hour = Math.floor(index / 2);
+    const hour = Math.floor(index / 4);
     const minute = index % 2 === 0 ? '00' : '30';
     return `${hour.toString().padStart(2, '0')}:${minute}`;
   });

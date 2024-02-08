@@ -31,7 +31,7 @@ const GoogleAuth = () => {
   return (
     <div className='flex flex-col content-center items-center py-10 bg-white h-screen w-screen text-black'>
       <h1>Attendance Master Ubiquity</h1>
-      <button className='text-white' onClick={() => handleLogin()}>Login</button>
+      <button className='text-white bg-black' onClick={() => handleLogin()}>Login</button>
       {error && <p>Login failed. Please try again.</p>}
     </div>
   );
