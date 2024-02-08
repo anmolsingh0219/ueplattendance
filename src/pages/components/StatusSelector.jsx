@@ -23,8 +23,8 @@ const appendDataToSheet = async (data, sheetId, range, accessToken) => {
 };
 
 const fetchDatesForEmployeeCode = async (employeeCode, accessToken) => {
-  const sheetId = 'YOUR_SHEET_ID';
-  const range = `'YOUR_RANGE'`; // Set this to the appropriate range in your sheet
+  const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo';
+  const range = 'Hours Logged!A3:E'; // Set this to the appropriate range in your sheet
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`;
 
   try {
