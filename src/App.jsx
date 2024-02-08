@@ -5,7 +5,7 @@ import GoogleAuth from './pages/components/GoogleAuth';
 import OAuthCallback from './pages/components/OAuthCallback';
 import HomePage from './pages/HomePage';
 import refreshAccessToken from './pages/components/RefreshToken';
-import EmployeeCodeSelection from './pages/components/EmployeeCodeSelection';
+import EmployeeCodeSelection from './pages/components/EmployeeCode';
 
 
 const App = () => {
