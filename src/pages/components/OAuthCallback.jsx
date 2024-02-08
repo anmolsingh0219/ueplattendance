@@ -45,7 +45,7 @@ const OAuthCallback = () => {
           if (userInfoResponse.ok) {
             const userInfo = await userInfoResponse.json();
             setUserEmail(userInfo.email); // Store the user's email in Recoil state
-            navigate('/homepage'); // Redirect to the homepage or dashboard
+            navigate('/employee-code'); // Redirect to the homepage or dashboard
           } else {
             throw new Error('Could not fetch user info.');
           }
