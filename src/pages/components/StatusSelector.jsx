@@ -56,17 +56,28 @@ const StatusSelector = () => {
   const [setDisabledDates] = useRecoilState(disabledDatesState); // Use the disabledDatesState
 
 
-const handleEmployeeCodeSelect = async (code) => {
-  setEmployeeCode(code); // Set the selected employee code
-  setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
-  setIsDropdownVisible(false); // Hide dropdown after selection
-  
-  // Here you would fetch the Google Sheet data for the selected employee code
-  const accessToken = localStorage.getItem('access_token'); // Retrieve accessToken from storage
-    const datesForEmployee = await fetchDatesForEmployeeCode(code, accessToken); // Fetch dates
-    setDisabledDates(datesForEmployee); // Update the Recoil state with the fetched dates
-};
-
+  const handleEmployeeCodeSelect = async (code) => {
+    setEmployeeCode(code);
+    setSearchTerm(''); // Clear search term if needed
+    setIsDropdownVisible(false); // Hide dropdown
+    
+    // Use the correct accessToken retrieval method
+    const accessToken = localStorage.getItem('access_token');
+    
+    if (accessToken) {
+      try {
+        const fetchedDisabledDates = await fetchDatesForEmployeeCode(code, accessToken);
+        setDisabledDates(fetchedDisabledDates);
+        console.log('Disabled Dates set:', fetchedDisabledDates);
+      } catch (error) {
+        console.error('Failed to fetch dates:', error);
+        // Handle the error appropriately here
+      }
+    } else {
+      console.error('Access token is not available');
+      // Handle the case where accessToken is not available
+    }
+  };
 
 
   const handleStatusChange = (e) => {

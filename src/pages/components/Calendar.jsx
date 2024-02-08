@@ -21,9 +21,11 @@ const Calendar = () => {
   };
 
   const tileDisabled = ({ date, view }) => {
+    console.log('Disabled Dates received:', disabledDates);
     // Disable tiles in 'month' view only
     if (view === 'month') {
       const dateStr = date.toISOString().split('T')[0];
+      console.log(`Is date disabled? Date: ${dateStr}, Disabled: ${disabledDates.includes(dateStr)}`);
       return disabledDates.includes(dateStr); // Check if the date should be disabled
     }
   };
