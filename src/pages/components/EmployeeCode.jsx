@@ -1,37 +1,44 @@
-// src/components/EmployeeCodeSelection.jsx
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useSetRecoilState,useRecoilState } from 'recoil';
 import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState } from './AppState';
 
 const EmployeeCodeSelection = () => {
   const navigate = useNavigate();
   const setEmployeeCode = useSetRecoilState(employeeCodeState);
+  const [selectedEmployeeCode, setSelectedEmployeeCode] = useState(""); // Local state for selected code
   const [searchTerm, setSearchTerm] = useRecoilState(employeeSearchTermState);
   const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState);
-  const employeeCodes = ['U001', 'U002', 'U005', 'U007']; // Your employee codes
-  
+  const employeeCodes = ['U001', 'U002', 'U005', 'U007'];
+
   const filteredEmployeeCodes = searchTerm
     ? employeeCodes.filter((code) =>
         code.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : employeeCodes;
 
-    const handleEmployeeCodeSelect = (code) => {
-      setEmployeeCode(code); // Set the selected employee code
-      setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
-      setIsDropdownVisible(false);
-      console.log("Employee code set to:", code);
-      navigate('/homepage'); // Hide dropdown after selection
-    };
+  useEffect(() => {
+    if (selectedEmployeeCode) {
+      // Whenever selectedEmployeeCode changes and it's not empty, update the global state
+      setEmployeeCode(selectedEmployeeCode);
+      console.log("Employee code set to:", selectedEmployeeCode);
+      // Optionally, perform other actions here if needed before navigating
+      navigate('/homepage');
+    }
+  }, [selectedEmployeeCode, setEmployeeCode, navigate]); // Depend on selectedEmployeeCode to trigger
+
+  const handleEmployeeCodeSelect = (code) => {
+    setSelectedEmployeeCode(code); // Update local state, which triggers useEffect
+    setSearchTerm(''); // Optionally clear or keep the search term
+    setIsDropdownVisible(false);
+  };
 
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
-    setIsDropdownVisible(true); // Show dropdown when typing
+    setIsDropdownVisible(true);
   };
 
   const handleInputBlur = () => {
-    // Optionally, you can hide the dropdown when the input loses focus
-    // setTimeout is used to delay the hiding, ensuring that a click on a dropdown item is registered
     setTimeout(() => {
       setIsDropdownVisible(false);
     }, 100);
@@ -51,21 +58,21 @@ const EmployeeCodeSelection = () => {
             onBlur={handleInputBlur}
           />
           {isDropdownVisible && (
-  <ul className="absolute border w-full z-10 bg-white text-black">
-    {filteredEmployeeCodes.map((code) => (
-      <li
-        key={code}
-        className="p-2 hover:bg-blue-200 cursor-pointer"
-        onClick={() => handleEmployeeCodeSelect(code)}
-        onMouseDown={(e) => e.preventDefault()} // Prevent the input from losing focus
-      >
-        {code}
-      </li>
-    ))}
-  </ul>
-)}
+            <ul className="absolute border w-full z-10 bg-white text-black">
+              {filteredEmployeeCodes.map((code) => (
+                <li
+                  key={code}
+                  className="p-2 hover:bg-blue-200 cursor-pointer"
+                  onClick={() => handleEmployeeCodeSelect(code)}
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  {code}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-       </div>
+    </div>
   );
 };
 
