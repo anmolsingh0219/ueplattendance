@@ -5,7 +5,6 @@ import GoogleAuth from './pages/components/GoogleAuth';
 import OAuthCallback from './pages/components/OAuthCallback';
 import HomePage from './pages/HomePage';
 import refreshAccessToken from './pages/components/RefreshToken';
-import EmployeeCodeSelection from './pages/components/EmployeeCode';
 
 
 const App = () => {
@@ -23,7 +22,6 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<GoogleAuth />} />
-        <Route path="/employee-code" element={<EmployeeCodeSelection />} />
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/oauth2callback" element={<OAuthCallback />} />
       </Routes>
