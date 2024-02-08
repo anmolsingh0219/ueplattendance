@@ -27,7 +27,6 @@ const StatusSelector = () => {
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [inTime, setInTime] = useRecoilState(inTimeState);
   const [outTime, setOutTime] = useRecoilState(outTimeState);
-  // const userEmail = useRecoilValue(userEmailState);
   const projects = useRecoilValue(projectsState);
   const employeeCode = useRecoilValue(employeeCodeState);
 

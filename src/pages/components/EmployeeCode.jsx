@@ -20,6 +20,7 @@ const EmployeeCodeSelection = () => {
       setEmployeeCode(code); // Set the selected employee code
       setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
       setIsDropdownVisible(false);
+      console.log("Employee code set to:", code);
       navigate('/homepage'); // Hide dropdown after selection
     };
 
