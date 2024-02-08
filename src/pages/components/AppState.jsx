@@ -63,3 +63,13 @@ export const dropdownVisibilityState = atom({
   key: 'dropdownVisibilityState',
   default: false,
 });
+
+export const employeeDataState = atom({
+  key: 'employeeDataState',
+  default: [],
+});
+
+export const disabledDatesState = atom({
+  key: 'disabledDatesState',
+  default: [], // This will hold an array of date strings
+});

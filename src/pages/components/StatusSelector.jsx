@@ -1,6 +1,6 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState } from './AppState';
-import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState } from './AppState';
+import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState, disabledDatesState } from './AppState';
 
 const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
@@ -22,6 +22,26 @@ const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   return await response.json();
 };
 
+const fetchDatesForEmployeeCode = async (employeeCode, accessToken) => {
+  const sheetId = 'YOUR_SHEET_ID';
+  const range = `'YOUR_RANGE'`; // Set this to the appropriate range in your sheet
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`;
+
+  try {
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    });
+    if (!response.ok) throw new Error('Failed to fetch sheet data');
+    const data = await response.json();
+    return data.values
+      .filter(row => row[2] === employeeCode) // Assuming employee code is in the third column
+      .map(row => row[1]); // Assuming date is in the second column
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return []; // Return an empty array in case of an error
+  }
+};
+
 const StatusSelector = () => {
   const [currentStatus, setCurrentStatus] = useRecoilState(currentStatusState);
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState);
@@ -33,6 +53,20 @@ const StatusSelector = () => {
   const [employeeCode, setEmployeeCode] = useRecoilState(employeeCodeState);
   const [searchTerm, setSearchTerm] = useRecoilState(employeeSearchTermState);
   const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState);
+  const [setDisabledDates] = useRecoilState(disabledDatesState); // Use the disabledDatesState
+
+
+const handleEmployeeCodeSelect = async (code) => {
+  setEmployeeCode(code); // Set the selected employee code
+  setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
+  setIsDropdownVisible(false); // Hide dropdown after selection
+  
+  // Here you would fetch the Google Sheet data for the selected employee code
+  const accessToken = localStorage.getItem('access_token'); // Retrieve accessToken from storage
+    const datesForEmployee = await fetchDatesForEmployeeCode(code, accessToken); // Fetch dates
+    setDisabledDates(datesForEmployee); // Update the Recoil state with the fetched dates
+};
+
 
 
   const handleStatusChange = (e) => {
@@ -45,12 +79,6 @@ const StatusSelector = () => {
         code.toLowerCase().includes(searchTerm.toLowerCase())
       )
     : employeeCodes;
-
-    const handleEmployeeCodeSelect = (code) => {
-      setEmployeeCode(code); // Set the selected employee code
-      setSearchTerm(code); // Update the searchTerm with the full code (e.g., "U005")
-      setIsDropdownVisible(false); // Hide dropdown after selection
-    };
 
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);
@@ -139,6 +167,7 @@ const StatusSelector = () => {
     const minute = index % 2 === 0 ? '00' : '30';
     return `${hour.toString().padStart(2, '0')}:${minute}`;
   });
+  
   
 
   return (

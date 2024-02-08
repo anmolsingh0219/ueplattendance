@@ -1,12 +1,14 @@
 import ReactCalendar from 'react-calendar';
-import { useRecoilState } from 'recoil';
-import { attendanceState, currentStatusState, selectedDateState } from './AppState';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { attendanceState, currentStatusState, selectedDateState,disabledDatesState } from './AppState';
 import 'react-calendar/dist/Calendar.css'; // Default styling, can be overridden
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState);
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [currentStatus] = useRecoilState(currentStatusState);
+  const disabledDates = useRecoilValue(disabledDatesState); // Get the disabled dates from Recoil state
+
 
   const handleDayClick = (value) => {
     const dateStr = value.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
@@ -16,6 +18,14 @@ const Calendar = () => {
       ...attendance,
       [dateStr]: currentStatus,
     });
+  };
+
+  const tileDisabled = ({ date, view }) => {
+    // Disable tiles in 'month' view only
+    if (view === 'month') {
+      const dateStr = date.toISOString().split('T')[0];
+      return disabledDates.includes(dateStr); // Check if the date should be disabled
+    }
   };
 
   const tileClassName = ({ date, view }) => {
@@ -47,6 +57,7 @@ const Calendar = () => {
       className="customCalendar"
       onClickDay={handleDayClick}
       tileClassName={tileClassName}
+      tileDisabled={tileDisabled}
       // You can also pass additional TailwindCSS classes to the calendar via the 'className' prop if necessary
     />
   </div>
