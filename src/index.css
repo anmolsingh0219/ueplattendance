@@ -93,8 +93,9 @@ button:focus-visible {
   background-color: purple; /* Light yellow for Paid Leave */
 }
 
-.react-calendar__tile--Holiday {
-  background-color: orange; /* Light yellow for Paid Leave */
+.react-calendar__tile--holiday {
+  background-color: orange;
+  color: white;
 }
 
 .react-calendar {

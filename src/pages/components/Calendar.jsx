@@ -24,10 +24,10 @@ const Calendar = () => {
   ];
 
   const handleDayClick = (value) => {
-    const localDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
-    const dateStr = localDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
-
-    setSelectedDate(dateStr); // Update the selected date state
+    const offset = value.getTimezoneOffset();
+    const adjustedDate = new Date(value.getTime() - (offset * 60 * 1000));
+    const dateStr = adjustedDate.toISOString().split('T')[0];
+  setSelectedDate(dateStr); // Update the selected date state
     setAttendance({
      ...attendance,
      [dateStr]: currentStatus,
@@ -49,6 +49,10 @@ const Calendar = () => {
       const dateStr = date.toISOString().split('T')[0];
       const status = attendance[dateStr];
       let classes = [];
+
+      if (holidays.includes(dateStr)) {
+        classes.push('react-calendar__tile--holiday');
+      }
       
       // Using the custom CSS classes from index.css
       if (status === 'Present') {
@@ -62,13 +66,6 @@ const Calendar = () => {
       if (selectedDate === dateStr) {
         classes.push('ring-2 ring-black'); // Highlight the selected date
       }
-
-      if (view === 'month') {
-        const dateStr = date.toISOString().split('T')[0];
-        if (holidays.includes(dateStr)) {
-          classes.push('react-calendar__tile--holiday');
-        }
-      }  
 
       return classes.length ? classes.join(' ') : null;
     }
