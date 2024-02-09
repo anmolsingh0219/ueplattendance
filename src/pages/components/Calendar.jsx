@@ -2,7 +2,7 @@ import ReactCalendar from 'react-calendar';
 import { useRecoilState } from 'recoil';
 import { attendanceState, currentStatusState, selectedDateState} from './AppState';
 import 'react-calendar/dist/Calendar.css'; // Default styling, can be overridden
-import { useDisabledDates } from './DisabledDates';
+import { useDisabledDates } from './UseDisableDates';
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState);
