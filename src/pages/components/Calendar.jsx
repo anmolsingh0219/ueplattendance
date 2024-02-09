@@ -24,9 +24,11 @@ const Calendar = () => {
   ];
 
   const handleDayClick = (value) => {
-    const offset = value.getTimezoneOffset();
-    const adjustedDate = new Date(value.getTime() - (offset * 60 * 1000));
-    const dateStr = adjustedDate.toISOString().split('T')[0];
+    const IST_OFFSET = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+
+  // Create a date string with the local time adjusted for IST timezone
+  const localDate = new Date(value.getTime() + IST_OFFSET);
+  const dateStr = localDate.toISOString().split('T')[0];
   setSelectedDate(dateStr); // Update the selected date state
     setAttendance({
      ...attendance,
