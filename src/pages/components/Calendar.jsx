@@ -10,6 +10,19 @@ const Calendar = () => {
   const [currentStatus] = useRecoilState(currentStatusState);
   const { disabledDates } = useDisabledDates();// Get the disabled dates from Recoil state
 
+  const holidays = [
+    '2024-01-01',
+    '2024-01-26',
+    '2024-03-25',
+    '2024-08-15',
+    '2024-08-19',
+    '2024-09-16',
+    '2024-10-10',
+    '2024-10-31',
+    '2024-11-01',
+    '2024-12-25',
+  ];
+
 
   const handleDayClick = (value) => {
     const dateStr = value.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
@@ -49,6 +62,13 @@ const Calendar = () => {
       if (selectedDate === dateStr) {
         classes.push('ring-2 ring-black'); // Highlight the selected date
       }
+
+      if (view === 'month') {
+        const dateStr = date.toISOString().split('T')[0];
+        if (holidays.includes(dateStr)) {
+          classes.push('react-calendar__tile--holiday');
+        }
+      }  
 
       return classes.length ? classes.join(' ') : null;
     }

@@ -1,18 +1,18 @@
 import Calendar from './components/Calendar';
 import StatusSelector from './components/StatusSelector';
-// import { LeaveDashboard } from './components/LeaveDashboard';
 import ProjectsTable from './components/ProjectsTable';
 import SelectedDateDisplay from './components/DateDisplay';
 import { RecoilRoot } from 'recoil';
 
-
 const HomePage = () => {
   return (
-     <RecoilRoot>
+    <RecoilRoot>
       <div className="flex flex-col items-center min-h-screen w-full bg-gray-800 text-white p-6">
+        <img src="C:\Users\papne\OneDrive\Desktop\ubiquity\Attendance2\attendanceweb\src\assets\logo2.png" alt="Company Logo" className="mb-4" />
+
         <h1 className="text-4xl font-bold mb-8">Attendance Tracker</h1>
         <div className="flex flex-wrap justify-around">
-          <div className="rounded ">
+          <div className="rounded">
             <Calendar />
           </div>
           <div className="flex flex-col items-start p-3">

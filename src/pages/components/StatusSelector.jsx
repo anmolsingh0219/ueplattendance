@@ -85,7 +85,7 @@ const StatusSelector = () => {
     setCurrentStatus(e.target.value);
   };
 
-  const employeeCodes = ['U001', 'U002', 'U005', 'U007']; // Your employee codes
+  const employeeCodes = ['E0001', 'E0002', 'E0003', 'E0004', 'E0005', 'E0006', 'E0007', 'E0008', 'E0009', 'E0010']; // Your employee codes
   const filteredEmployeeCodes = searchTerm
     ? employeeCodes.filter((code) =>
         code.toLowerCase().includes(searchTerm.toLowerCase())
@@ -174,12 +174,12 @@ const StatusSelector = () => {
   const totalHours = calculateTotalHours();
 
   // Generate time options for the dropdown
-  const timeOptions = Array.from({ length: 48 }, (_, index) => {
+   // Generate time options for the dropdown
+   const timeOptions = Array.from({ length: 48 }, (_, index) => {
     const hour = Math.floor(index / 2);
     const minute = index % 2 === 0 ? '00' : '30';
     return `${hour.toString().padStart(2, '0')}:${minute}`;
   });
-  
   
 
   return (
