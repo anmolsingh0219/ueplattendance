@@ -1,13 +1,14 @@
 import ReactCalendar from 'react-calendar';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { attendanceState, currentStatusState, selectedDateState,disabledDatesState } from './AppState';
+import { useRecoilState } from 'recoil';
+import { attendanceState, currentStatusState, selectedDateState} from './AppState';
 import 'react-calendar/dist/Calendar.css'; // Default styling, can be overridden
+import { useDisabledDates } from './DisabledDates';
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState);
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [currentStatus] = useRecoilState(currentStatusState);
-  const disabledDates = useRecoilValue(disabledDatesState); // Get the disabled dates from Recoil state
+  const { disabledDates } = useDisabledDates();// Get the disabled dates from Recoil state
 
 
   const handleDayClick = (value) => {

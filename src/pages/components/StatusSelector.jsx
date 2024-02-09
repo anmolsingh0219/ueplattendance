@@ -1,6 +1,7 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState } from './AppState';
-import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState, disabledDatesState } from './AppState';
+import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState } from './AppState';
+import { useDisabledDates } from './UseDisableDates';
 
 const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
@@ -52,9 +53,8 @@ const StatusSelector = () => {
   const projects = useRecoilValue(projectsState);
   const [employeeCode, setEmployeeCode] = useRecoilState(employeeCodeState);
   const [searchTerm, setSearchTerm] = useRecoilState(employeeSearchTermState);
-  const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState);
-  const [setDisabledDates] = useRecoilState(disabledDatesState); // Use the disabledDatesState
-
+  const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState); // Use the disabledDatesState
+  const { setDisabledDates } = useDisabledDates();
 
   const handleEmployeeCodeSelect = async (code) => {
     setEmployeeCode(code);
@@ -63,19 +63,18 @@ const StatusSelector = () => {
     
     // Use the correct accessToken retrieval method
     const accessToken = localStorage.getItem('access_token');
-    
     if (accessToken) {
       try {
         const fetchedDisabledDates = await fetchDatesForEmployeeCode(code, accessToken);
-        setDisabledDates(fetchedDisabledDates);
+        setDisabledDates(fetchedDisabledDates.map(dateStr => {
+          // Transform the date to the format expected by the calendar
+          const [day, month, year] = dateStr.split(/[\s-]/);
+          return new Date(`20${year}`, month - 1, day).toISOString().split('T')[0];
+        }));
         console.log('Disabled Dates set:', fetchedDisabledDates);
       } catch (error) {
         console.error('Failed to fetch dates:', error);
-        // Handle the error appropriately here
       }
-    } else {
-      console.error('Access token is not available');
-      // Handle the case where accessToken is not available
     }
   };
 
@@ -174,7 +173,7 @@ const StatusSelector = () => {
 
   // Generate time options for the dropdown
   const timeOptions = Array.from({ length: 48 }, (_, index) => {
-    const hour = Math.floor(index / 4);
+    const hour = Math.floor(index / 2);
     const minute = index % 2 === 0 ? '00' : '30';
     return `${hour.toString().padStart(2, '0')}:${minute}`;
   });

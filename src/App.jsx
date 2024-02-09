@@ -5,6 +5,7 @@ import GoogleAuth from './pages/components/GoogleAuth';
 import OAuthCallback from './pages/components/OAuthCallback';
 import HomePage from './pages/HomePage';
 import refreshAccessToken from './pages/components/RefreshToken';
+import { DisabledDatesProvider } from './pages/components/DisabledDates';
 
 
 const App = () => {
@@ -22,8 +23,15 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" element={<GoogleAuth />} />
-        <Route path="/homepage" element={<HomePage />} />
         <Route path="/oauth2callback" element={<OAuthCallback />} />
+        <Route
+          path="/homepage"
+          element={
+            <DisabledDatesProvider>
+              <HomePage />
+            </DisabledDatesProvider>
+          }
+        />
       </Routes>
     </Router>
   );
