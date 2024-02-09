@@ -23,16 +23,16 @@ const Calendar = () => {
     '2024-12-25',
   ];
 
-
   const handleDayClick = (value) => {
-    const dateStr = value.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+    const localDate = new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    const dateStr = localDate.toISOString().split('T')[0]; // Format the date as YYYY-MM-DD
+
     setSelectedDate(dateStr); // Update the selected date state
-    // Update the attendance state for the clicked date with the current status
     setAttendance({
-      ...attendance,
-      [dateStr]: currentStatus,
+     ...attendance,
+     [dateStr]: currentStatus,
     });
-  };
+    };
 
   const tileDisabled = ({ date, view }) => {
     console.log('Disabled Dates received:', disabledDates);

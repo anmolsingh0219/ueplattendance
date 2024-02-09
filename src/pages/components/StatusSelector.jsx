@@ -175,10 +175,10 @@ const StatusSelector = () => {
 
   // Generate time options for the dropdown
    // Generate time options for the dropdown
-   const timeOptions = Array.from({ length: 48 }, (_, index) => {
-    const hour = Math.floor(index / 2);
-    const minute = index % 2 === 0 ? '00' : '30';
-    return `${hour.toString().padStart(2, '0')}:${minute}`;
+   const timeOptions = Array.from({ length: 96 }, (_, index) => {
+    const hour = Math.floor(index / 4);
+    const minutes = (index % 4) * 15;
+    return `${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   });
   
 
@@ -218,7 +218,7 @@ const StatusSelector = () => {
           <input
             type="text"
             placeholder="Search employee code"
-            className="border p-2"
+            className="border p-2 bg-black text-white"
             value={searchTerm}
             onChange={handleSearchTermChange}
             onFocus={() => setIsDropdownVisible(true)}

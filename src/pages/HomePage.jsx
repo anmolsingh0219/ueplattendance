@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <RecoilRoot>
       <div className="flex flex-col items-center min-h-screen w-full bg-gray-800 text-white p-6">
-        <img src="C:\Users\papne\OneDrive\Desktop\ubiquity\Attendance2\attendanceweb\src\assets\logo2.png" alt="Company Logo" className="mb-4" />
+        <img src="attendanceweb\src\assets\logo2.png" alt="Company Logo" className="mb-4" />
 
         <h1 className="text-4xl font-bold mb-8">Attendance Tracker</h1>
         <div className="flex flex-wrap justify-around">
