@@ -1,6 +1,6 @@
 import ReactCalendar from 'react-calendar';
 import { useRecoilState } from 'recoil';
-import { attendanceState, currentStatusState, selectedDateState} from './AppState';
+import { attendanceState, currentStatusState, selectedDateState } from './AppState';
 import 'react-calendar/dist/Calendar.css'; // Default styling, can be overridden
 import { useDisabledDates } from './UseDisableDates';
 
@@ -8,7 +8,7 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useRecoilState(selectedDateState);
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [currentStatus] = useRecoilState(currentStatusState);
-  const { disabledDates } = useDisabledDates();// Get the disabled dates from Recoil state
+  const { disabledDates } = useDisabledDates(); // Get the disabled dates from Recoil state
 
   const holidays = [
     '2024-01-01',
@@ -23,39 +23,47 @@ const Calendar = () => {
     '2024-12-25',
   ];
 
-  const handleDayClick = (value) => { // 5.5 hours in milliseconds
-    const ISTOffset = 330; // in minutes
-    const localDate = new Date(value.getTime() + ISTOffset * 60000); // Convert offset to milliseconds and add
-    const dateStr = localDate.toISOString().split('T')[0]
-    
-  setSelectedDate(dateStr); // Update the selected date state
+  const handleDayClick = (value) => {
+    // Manually construct the date string in 'YYYY-MM-DD' format
+    const year = value.getFullYear();
+    const month = (value.getMonth() + 1).toString().padStart(2, '0'); // JS months are 0-indexed
+    const day = value.getDate().toString().padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    setSelectedDate(dateStr); // Update the selected date state
     setAttendance({
-     ...attendance,
-     [dateStr]: currentStatus,
+      ...attendance,
+      [dateStr]: currentStatus,
     });
-    };
+  };
 
   const tileDisabled = ({ date, view }) => {
-    console.log('Disabled Dates received:', disabledDates);
-    // Disable tiles in 'month' view only
     if (view === 'month') {
-      const dateStr = date.toISOString().split('T')[0];
-      console.log(`Is date disabled? Date: ${dateStr}, Disabled: ${disabledDates.includes(dateStr)}`);
-      return disabledDates.includes(dateStr); // Check if the date should be disabled
+      // Same manual construction for comparison
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      
+      return disabledDates.includes(dateStr);
     }
   };
 
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
-      const dateStr = date.toISOString().split('T')[0];
+      // Again, construct the date string manually
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
       const status = attendance[dateStr];
       let classes = [];
 
       if (holidays.includes(dateStr)) {
         classes.push('react-calendar__tile--holiday');
       }
-      
-      // Using the custom CSS classes from index.css
+
       if (status === 'Present') {
         classes.push('react-calendar__tile--Present');
       } else if (status === 'Paid Leave') {
@@ -63,7 +71,7 @@ const Calendar = () => {
       } else if (status === 'Absent') {
         classes.push('react-calendar__tile--Absent');
       }
-      
+
       if (selectedDate === dateStr) {
         classes.push('ring-2 ring-black'); // Highlight the selected date
       }
@@ -74,14 +82,14 @@ const Calendar = () => {
 
   return (
     <div className="flex flex-col items-center justify-center p-5 bg-white text-black">
-    <ReactCalendar
-      className="customCalendar"
-      onClickDay={handleDayClick}
-      tileClassName={tileClassName}
-      tileDisabled={tileDisabled}
-      // You can also pass additional TailwindCSS classes to the calendar via the 'className' prop if necessary
-    />
-  </div>
+      <ReactCalendar
+        className="customCalendar"
+        onClickDay={handleDayClick}
+        tileClassName={tileClassName}
+        tileDisabled={tileDisabled}
+        // You can also pass additional TailwindCSS classes to the calendar via the 'className' prop if necessary
+      />
+    </div>
   );
 };
 
