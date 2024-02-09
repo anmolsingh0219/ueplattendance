@@ -3,8 +3,7 @@
 import { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
-
-const DisabledDatesContext = createContext();
+export const DisabledDatesContext = createContext();
 
 export const DisabledDatesProvider = ({ children }) => {
     const [disabledDates, setDisabledDates] = useState([]);
