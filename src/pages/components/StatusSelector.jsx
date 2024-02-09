@@ -66,12 +66,14 @@ const StatusSelector = () => {
     if (accessToken) {
       try {
         const fetchedDisabledDates = await fetchDatesForEmployeeCode(code, accessToken);
-        setDisabledDates(fetchedDisabledDates.map(dateStr => {
-          // Transform the date to the format expected by the calendar
-          const [day, month, year] = dateStr.split(/[\s-]/);
-          return new Date(`20${year}`, month - 1, day).toISOString().split('T')[0];
-        }));
-        console.log('Disabled Dates set:', fetchedDisabledDates);
+        const formattedDates = fetchedDisabledDates.map(dateStr => {
+          // Convert the date to a JavaScript Date object
+          const dateParts = dateStr.match(/(\d{2})(\w{3})(\d{2})/);
+          const date = new Date(`20${dateParts[3]}`, new Date(`${dateParts[2]} 01 2000`).getMonth(), dateParts[1]);
+          return date.toISOString().split('T')[0];
+        });
+        setDisabledDates(formattedDates);
+        console.log('Disabled Dates set:', formattedDates);
       } catch (error) {
         console.error('Failed to fetch dates:', error);
       }
