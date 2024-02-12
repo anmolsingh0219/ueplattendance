@@ -11,7 +11,7 @@ const HomePage = () => {
       <div className="flex flex-col items-center min-h-screen w-full bg-gray-800 text-white p-6">
         {/* Added a div with a white background and some padding */}
         <div className="bg-white p-2 rounded w-full items-center">
-          <img src={companyLogo} alt="Company Logo" className="mb-4" />
+          <img src={companyLogo} alt="Company Logo" className="mb-4 flex" />
         </div>
         <h1 className="text-4xl font-bold mb-8">Attendance Tracker</h1>
         <div className="flex flex-wrap justify-around">

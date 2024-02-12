@@ -214,7 +214,7 @@ const StatusSelector = () => {
         <div>Total Hours: {totalHours.toFixed(2)}</div>
       </div>
       <div className='p-3'>
-      <div>Your Employee Code: {employeeCode}</div>
+      <div className='font-semibold'>Your Employee Code: {employeeCode}</div>
       <button className="bg-blue-600 text-white py-2 px-4 text-lg rounded hover:bg-blue-700" onClick={handleSave}>
       Save
     </button>
