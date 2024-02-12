@@ -1,7 +1,7 @@
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentStatusState, selectedDateState, attendanceState, inTimeState, outTimeState, projectsState } from './AppState';
-import { employeeCodeState, employeeSearchTermState, dropdownVisibilityState } from './AppState';
 import { useDisabledDates } from './UseDisableDates';
+import { useEffect, useState } from 'react';
 
 const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   const sheetsUrl = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
@@ -22,6 +22,18 @@ const appendDataToSheet = async (data, sheetId, range, accessToken) => {
 
   return await response.json();
 };
+
+const getEmployeeCodeByEmail = (email) => {
+  // Example mapping, this could come from a more dynamic source or be replaced with a call to an API or database
+  const emailToCodeMapping = {
+    'papnejaanmol@gmail.com': 'E0001',
+    'user2@example.com': 'E0002',
+    // Add more mappings as needed
+  };
+
+  return emailToCodeMapping[email] || null; // Return null or a default value if not found
+};
+
 
 const fetchDatesForEmployeeCode = async (employeeCode, accessToken) => {
   const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo';
@@ -49,60 +61,33 @@ const StatusSelector = () => {
   const [attendance, setAttendance] = useRecoilState(attendanceState);
   const [inTime, setInTime] = useRecoilState(inTimeState);
   const [outTime, setOutTime] = useRecoilState(outTimeState);
-  // const userEmail = useRecoilValue(userEmailState);
-  const projects = useRecoilValue(projectsState);
-  const [employeeCode, setEmployeeCode] = useRecoilState(employeeCodeState);
-  const [searchTerm, setSearchTerm] = useRecoilState(employeeSearchTermState);
-  const [isDropdownVisible, setIsDropdownVisible] = useRecoilState(dropdownVisibilityState); // Use the disabledDatesState
+  const projects = useRecoilValue(projectsState);// Use the disabledDatesState
   const { setDisabledDates } = useDisabledDates();
+  const [employeeCode, setEmployeeCode] = useState('');
 
-  const handleEmployeeCodeSelect = async (code) => {
+  useEffect(() => {
+    const email = localStorage.getItem('user_email');
+    const code = getEmployeeCodeByEmail(email);
     setEmployeeCode(code);
-    setSearchTerm(code); // Clear search term if needed
-    setIsDropdownVisible(false); // Hide dropdown
-    
-    // Use the correct accessToken retrieval method
-    const accessToken = localStorage.getItem('access_token');
-    if (accessToken) {
-      try {
-        const fetchedDisabledDates = await fetchDatesForEmployeeCode(code, accessToken);
-        const formattedDates = fetchedDisabledDates.map(dateStr => {
-          // Convert the date to a JavaScript Date object
-          const dateParts = dateStr.match(/(\d{2})(\w{3})(\d{2})/);
-          const date = new Date(`20${dateParts[3]}`, new Date(`${dateParts[2]} 01 2000`).getMonth(), dateParts[1]);
-          return date.toISOString().split('T')[0];
-        });
-        setDisabledDates(formattedDates);
-        console.log('Disabled Dates set:', formattedDates);
-      } catch (error) {
-        console.error('Failed to fetch dates:', error);
-      }
+
+    if (code) {
+      const accessToken = localStorage.getItem('access_token');
+      fetchDatesForEmployeeCode(code, accessToken)
+        .then(fetchedDisabledDates => {
+          const formattedDates = fetchedDisabledDates.map(dateStr => {
+            const dateParts = dateStr.match(/(\d{2})(\w{3})(\d{2})/);
+            const date = new Date(`20${dateParts[3]}`, new Date(`${dateParts[2]} 01 2000`).getMonth(), dateParts[1]);
+            return date.toISOString().split('T')[0];
+          });
+          setDisabledDates(formattedDates);
+        })
+        .catch(error => console.error('Failed to fetch dates:', error));
     }
-  };
+  }, []);
 
 
   const handleStatusChange = (e) => {
     setCurrentStatus(e.target.value);
-  };
-
-  const employeeCodes = ['E0001', 'E0002', 'E0003', 'E0004', 'E0005', 'E0006', 'E0007', 'E0008', 'E0009', 'E0010']; // Your employee codes
-  const filteredEmployeeCodes = searchTerm
-    ? employeeCodes.filter((code) =>
-        code.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : employeeCodes;
-
-  const handleSearchTermChange = (e) => {
-    setSearchTerm(e.target.value);
-    setIsDropdownVisible(true); // Show dropdown when typing
-  };
-
-  const handleInputBlur = () => {
-    // Optionally, you can hide the dropdown when the input loses focus
-    // setTimeout is used to delay the hiding, ensuring that a click on a dropdown item is registered
-    setTimeout(() => {
-      setIsDropdownVisible(false);
-    }, 100);
   };
 
   const handleSave  = async () => {
@@ -212,34 +197,6 @@ const StatusSelector = () => {
         </select>
         <div>Total Hours: {totalHours.toFixed(2)}</div>
       </div>
-      <div className='flex-col items-start'>
-        <div>Enter your Employee Code</div>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search employee code"
-            className="border p-2 bg-black text-white"
-            value={searchTerm}
-            onChange={handleSearchTermChange}
-            onFocus={() => setIsDropdownVisible(true)}
-            onBlur={handleInputBlur}
-          />
-          {isDropdownVisible && (
-  <ul className="absolute border w-full z-10 bg-white text-black">
-    {filteredEmployeeCodes.map((code) => (
-      <li
-        key={code}
-        className="p-2 hover:bg-blue-200 cursor-pointer"
-        onClick={() => handleEmployeeCodeSelect(code)}
-        onMouseDown={(e) => e.preventDefault()} // Prevent the input from losing focus
-      >
-        {code}
-      </li>
-    ))}
-  </ul>
-)}
-        </div>
-       </div>
       <div className='p-3'>
       <button className="bg-blue-600 text-white py-2 px-4 text-lg rounded hover:bg-blue-700" onClick={handleSave}>
       Save
