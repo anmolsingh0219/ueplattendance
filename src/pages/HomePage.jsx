@@ -9,7 +9,10 @@ const HomePage = () => {
   return (
     <RecoilRoot>
       <div className="flex flex-col items-center min-h-screen w-full bg-gray-800 text-white p-6">
-        <img src={companyLogo} alt="Company Logo" className="mb-4" />
+        {/* Added a div with a white background and some padding */}
+        <div className="bg-white p-2 rounded">
+          <img src={companyLogo} alt="Company Logo" className="mb-4" />
+        </div>
         <h1 className="text-4xl font-bold mb-8">Attendance Tracker</h1>
         <div className="flex flex-wrap justify-around">
           <div className="rounded">
