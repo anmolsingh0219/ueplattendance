@@ -23,15 +23,24 @@ const appendDataToSheet = async (data, sheetId, range, accessToken) => {
   return await response.json();
 };
 
-const getEmployeeCodeByEmail = (email) => {
-  // Example mapping, this could come from a more dynamic source or be replaced with a call to an API or database
-  const emailToCodeMapping = {
-    'papnejaanmol@gmail.com': 'E0001',
-    'user2@example.com': 'E0002',
-    // Add more mappings as needed
-  };
+const fetchEmployeeCodeByEmail = async (email, accessToken) => {
+  const sheetId = '1O-xjnt6OVgLdbsRp7q-3pHK06Q2MCcZGdm8ImKXHLPo'; // Replace with your actual Google Sheet ID
+  const range = 'Email!A2:B'; // e.g., 'EmployeeMapping!A:B' where A column is email and B is code
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`;
 
-  return emailToCodeMapping[email] || null; // Return null or a default value if not found
+  try {
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${accessToken}` },
+    });
+    if (!response.ok) throw new Error('Failed to fetch sheet data');
+    const data = await response.json();
+    const rows = data.values || [];
+    const matchingRow = rows.find(row => row[0] === email);
+    return matchingRow ? matchingRow[1] : null; // Return employee code or null if not found
+  } catch (error) {
+    console.error('Error fetching employee code:', error);
+    return null;
+  }
 };
 
 
@@ -66,9 +75,12 @@ const StatusSelector = () => {
   const [employeeCode, setEmployeeCode] = useState('');
 
   useEffect(() => {
-    const email = localStorage.getItem('user_email');
-    const code = getEmployeeCodeByEmail(email);
-    setEmployeeCode(code);
+    const initializeComponent = async () => {
+      const accessToken = localStorage.getItem('access_token');
+      const email = localStorage.getItem('user_email');
+      if (accessToken && email) {
+        const code = await fetchEmployeeCodeByEmail(email, accessToken);
+        setEmployeeCode(code);
 
     if (code) {
       const accessToken = localStorage.getItem('access_token');
@@ -82,8 +94,12 @@ const StatusSelector = () => {
           setDisabledDates(formattedDates);
         })
         .catch(error => console.error('Failed to fetch dates:', error));
+      }
     }
-  }, []);
+  };
+
+  initializeComponent();
+}, []);
 
 
   const handleStatusChange = (e) => {
