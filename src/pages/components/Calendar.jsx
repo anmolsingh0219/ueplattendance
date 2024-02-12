@@ -87,7 +87,36 @@ const Calendar = () => {
         onClickDay={handleDayClick}
         tileClassName={tileClassName}
         tileDisabled={tileDisabled}
-        // You can also pass additional TailwindCSS classes to the calendar via the 'className' prop if necessary
+        // Set showNavigation to false to remove the default navigation
+        showNavigation={false}
+        // Custom navigation that only includes month navigation
+        navigationLabel={({ date, label }) => (
+          <div className="react-calendar__navigation">
+            <button
+              type="button"
+              onClick={() => {
+                const nextMonth = new Date(date);
+                nextMonth.setMonth(date.getMonth() - 1);
+                return nextMonth;
+              }}
+            >
+              {'<'}
+            </button>
+            <span className="react-calendar__navigation__label">
+              {label.split(' ')[0]} {/* Only show the month part of the label */}
+            </span>
+            <button
+              type="button"
+              onClick={() => {
+                const nextMonth = new Date(date);
+                nextMonth.setMonth(date.getMonth() + 1);
+                return nextMonth;
+              }}
+            >
+              {'>'}
+            </button>
+          </div>
+        )}
       />
     </div>
   );
